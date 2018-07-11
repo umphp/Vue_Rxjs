@@ -20,7 +20,7 @@ export default {
     .mapTo(
       "https://starwars.egghead.training/people/1"
       )
-    .switchMap(createLoader)
+    .exhaustMap(createLoader)
     .catch(err => createLoader("https://starwars.egghead.training/people/2"))
     .share();
 
