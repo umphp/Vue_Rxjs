@@ -1,7 +1,7 @@
 <template>
   <section class='section'>
     <button class='button' v-stream:click='click$'>Click</button>
-    <h1 class='title'>{{random$}}</h1>
+    <h1 class='title'>{{luke$}}</h1>
   </section>
 </template>
 
@@ -11,9 +11,16 @@ import { Observable } from "rxjs"
 export default {
   domStreams: ['click$'],
   subscriptions() {
-    const random$ = this.click$.map(() => Math.random())
+    const people$ = Observable.from(
+      this.$http.get(
+        "https://starwars.egghead.training/people/1"
+      )
+    ).pluck('data', 'name');
+
+    const luke$ = this.click$.switchMap(() => people$);
+
     return {
-      random$
+      luke$
     }
   }
 }
