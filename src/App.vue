@@ -23,6 +23,12 @@ export default {
   },
   domStreams: ['click$', 'imageError$'],
   subscriptions() {
+    const cache = {};
+    const cachePeron = cache => url => {
+      return cache[url]
+        ? cache[url]
+        : (cache[url] = createLoader(url))
+    };
     const activeTab$ = this.$watchAsObservable(
       'activeTab',
       { immediate: true }
@@ -40,7 +46,7 @@ export default {
     .map( id => 
       `https://starwars.egghead.training/people/${id}`
       )
-    .exhaustMap(createLoader)
+    .switchMap(cachePeron(cache))
     .catch(err => createLoader("https://starwars.egghead.training/people/2"))
     .share();
 
